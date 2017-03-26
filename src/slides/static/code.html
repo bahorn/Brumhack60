@@ -1,0 +1,130 @@
+<html>
+    <head>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+<script type="text/javascript">
+
+
+currentSlide = 0;
+totalSlides = 0;
+prevSwipe = 0;
+globalConfig = {};
+
+function redraw()
+{
+    document.getElementsByTagName("body")[0].style.backgroundColor = globalConfig['meta']['background'];
+    curr = globalConfig['slides'][currentSlide];
+    if ('title' in curr) {
+        document.getElementById("title").innerHTML = curr['title'];
+    } else {
+        document.getElementById("title").innerHTML = "";
+    }
+    if ('text' in curr) {
+        document.getElementById("text").innerHTML = curr['text'];
+    } else {
+        document.getElementById("text").innerHTML = "";
+    }
+    if ('image' in curr) {
+        document.getElementById("image").setAttribute("src", curr['image']['src']);
+    } else {
+        document.getElementById("image").setAttribute("src","");
+    }
+}
+
+function moveSlideForward()
+{
+    if (currentSlide+1 >= totalSlides) {
+        currentSlide = 0;
+    } else {
+        currentSlide += 1;
+    }
+    redraw();
+}
+
+function moveSlideBack()
+{
+    if (currentSlide < 0) {
+        currentSlide = totalSlides-1;
+    } else {
+        currentSlide -= 1;
+    }
+    redraw();
+}
+
+class Fun {
+    constructor(config){
+        currentSlide = 0;
+        globalConfig = config;
+        totalSlides = config['slides'].length;
+        redraw();
+        let socket = io.connect('http://'+document.domain+":"+location.port);
+        socket.on('connect', function() {
+            socket.emit('input', {action: 'I\'m connected!', value: 'a', 'timestamp':0});
+        });
+        socket.on('output', function(data) {
+            if (data['action'] == "swipe") {
+                if (data['timestamp'] > prevSwipe+100000){
+		            let x = Math.sign(data['value']['direction'][0])
+                    let y = Math.sign(data['value']['direction'][1])
+                    if (x >= 1) {
+                        moveSlideForward();
+                    } else if (x <= 1) {
+                        moveSlideBack();
+                    }
+                }
+                prevSwipe = data['timestamp'];
+            }
+        });
+    }
+}
+
+
+function main()
+{
+    let xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if(this.readyState == 4 && this.status == 200){
+            let config = JSON.parse(xhttp.responseText);
+            let a = new Fun(config);
+        }
+    }
+    xhttp.open("GET", "/static/slides.json", true);
+    xhttp.send();
+}
+
+</script>
+<style>
+body{
+    border: 5px solid #000;
+}
+
+#slide{
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+#title{
+    font-size: 10vw;
+}
+#text{
+    font-size: 5vw;
+}
+#image{
+    border-width: 0px;
+    width: auto;
+    height: 300px;
+}
+#list{
+    font-size: 5vw;
+}
+</style>
+    </head>
+    <body onload="main()">
+        <div id="slide">
+            <div id="title"></div>
+            <div id="text"></div>
+            <img id="image" src=""></img>
+        </div>
+    </body>
+</html>

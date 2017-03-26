@@ -1,0 +1,30 @@
+{
+    "meta":{
+        "background":"#99ff99"
+    },
+    "slides":[
+        {
+            "title":"LeapFrog",
+            "text":"Project by B Horn and C Parker",
+            "image":{
+                "src":"https://images-na.ssl-images-amazon.com/images/I/518ymz-66GL._SL1155_.jpg"
+            }
+        },
+        {
+            "title":"What did we do?",
+            "text":"We wrote code that send gesture information from the leap Motion to a websocket, a util to display the our hands position and various other tools"
+        },
+        {
+            "title":"Other tools",
+            "text":"This presentation was made by a tool we made this weekend. It lets us navigate by using hand gestures."
+        },
+        {
+            "title":"Experience using the Leap Motion",
+            "text":"Getting set up was fairly easy, had issue getting the python dev tools to work. (Only worked on Linux, not OSX)"
+        },
+        {
+            "title":"Contact",
+            "text":"B Horn:  beowulf@horn.co.uk / @bahorn (GH)/ @baahorn (twitter)"
+        }
+    ]
+}

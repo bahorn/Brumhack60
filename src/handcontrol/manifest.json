@@ -1,0 +1,23 @@
+{
+  "name": "handcontrol",
+  "description": "Control Chrome with your hand!",
+  "version": "1.0",
+  "manifest_version": 2,
+  "permissions": ["alarms", "tabs", "background", "bookmarks", "storage", "declarativeWebRequest", "*://*/*"],
+  "background": {
+    "scripts": ["socket.io.min.js", "background.js"]
+  },
+  "content_scripts": [
+    {
+       "matches": ["<all_urls>"],
+       "js": ["content.js"],
+       "run_at": "document_idle"
+    }
+  ],
+  "browser_action": {
+    "default_icon" : "icon/icon.png",
+    "default_title": "handcontrol"
+  },
+  "commands": {
+  }
+}
